@@ -1,0 +1,23 @@
+{
+  "name": "save-file",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "clean": "rm img/*.{png,jpg}",
+    "combine": "cd img && convert $(ls -1 *.{png,jpg} | sort -h) ../result.pdf",
+    "combine:png:min": "cd img && convert $(ls -1 *.{png,jpg} | sort -h) -define PNG:compression-level=9 -define PNG:compression-strategy=0 -define png:compression-filter=2 ../result-min.pdf",
+    "combine:jpg:min": "cd img && convert $(ls -1 *.{png,jpg} | sort -h) -compress JPEG -quality 70 ../result-min.pdf",
+    "start": "npx nodemon main.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.2"
+  }
+}
