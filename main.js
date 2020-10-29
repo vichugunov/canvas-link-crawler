@@ -109,10 +109,10 @@ const saveToFile = (base64String, filename) => {
   })
 }
 
-const downloadFileByLink = (link) => {
+const downloadFileByLink = (link, saveAs) => {
   return new Promise((resolve, reject) => {
     const extension = extractExtension(link)
-    const filename = getNextFilename(extension)
+    const filename = saveAs || getNextFilename(extension)
     const filePath = path.resolve(basePath, filename)
     childProcess.exec(`wget ${link} -O ${filePath}`, (e) => {
       if (e) {
@@ -142,6 +142,30 @@ app.post('/links', async ( req, res ) => {
   } catch (e) {
     res.status(500).send(`Error happened ${e.message}`)
   }
+})
+
+app.post('/links/save-as', async (req, res) => {
+  const { link, filename } = req.body
+
+  const linksInfo = req.body
+  if (!linksInfo || !Array.isArray(linksInfo)) {
+    console.error(`No links. Got this body`, req.body)
+    return res.status(500).send(`No link. Got this body ${req.body}`)
+  }
+
+  const results = []
+  for (const linkInfo of linksInfo) {
+    const { link, filename } = linkInfo
+    if (!link || !filename) {
+      console.error(`No link and filename. Got this body`, req.body)
+      return res.status(500).send(`No link and filename. Got this body ${req.body}`)
+    }
+
+    await downloadFileByLink(link, filename)
+    results.push(`File ${filename} was written`)
+  }
+
+  res.send(results.join('\n'))
 })
 
 app.post('/id/:id', async (req, res) => {
