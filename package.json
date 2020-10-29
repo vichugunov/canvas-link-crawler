@@ -6,8 +6,8 @@
   "scripts": {
     "clean": "rm img/*.{png,jpg}",
     "combine": "cd img && convert $(ls -1 *.{png,jpg} | sort -h) ../result.pdf",
-    "combine:png:min": "cd img && convert $(ls -1 *.{png,jpg} | sort -h) -define PNG:compression-level=9 -define PNG:compression-strategy=0 -define png:compression-filter=2 ../result-min.pdf",
-    "combine:jpg:min": "cd img && convert $(ls -1 *.{png,jpg} | sort -h) -compress JPEG -quality 70 ../result-min.pdf",
+    "combine:png:min": "cd img && convert $(ls -1 *.{png,jpg} | sort -h) -define PNG:compression-level=9 -define PNG:compression-strategy=0 -define png:compression-filter=2 ../result-min-png-compression.pdf",
+    "combine:jpg:min": "cd img && convert $(ls -1 *.{png,jpg} | sort -h) -compress JPEG -quality 70 ../result-min-jpg-compression.pdf",
     "start": "npx nodemon main.js",
     "help": "node main.js --help",
     "test": "echo \"Error: no test specified\" && exit 1"
