@@ -5,11 +5,54 @@ const fs = require('fs')
 const path = require('path')
 const childProcess = require('child_process')
 const cors = require('cors')
+const commandLineArgs = require('command-line-args')
+const commandLineUsage = require('command-line-usage')
+
+const sections = [
+  {
+    header: 'Saving files via api',
+    content: 'Use it in order to build a book from crawled pages.\
+     Please run with this pattern `npm start -- [--<option> <value>]`'
+  },
+  {
+    header: 'Options',
+    optionList: [
+      {
+        name: 'from',
+        typeLabel: '{underline number}',
+        description: 'Auto-increment index, used in file name.'
+      },
+      {
+        name: 'help',
+        description: 'Print this usage guide.'
+      }
+    ]
+  }
+]
+const usage = commandLineUsage(sections)
+
+
+const optionDefinition = [
+  {
+    name: 'from', type: Number, defaultValue: 0
+  },
+  {
+    name: 'help', type: Boolean, defaultValue: false
+  }
+]
+
+const options = commandLineArgs(optionDefinition)
+
+if (options.help) {
+  console.log(usage)
+  process.exit(0)
+}
 
 const corsOptions = {
   origin: '*'
 }
 
+let i = options.from
 
 const basePath = 'img'
 
@@ -21,8 +64,6 @@ app.use(bodyParser.text({
 app.use(bodyParser.json())
 
 app.use(cors(corsOptions))
-
-let i = 0
 
 const defaultExtension = 'png'
 
@@ -125,4 +166,5 @@ app.post('/', async (req, res) => {
 
 app.listen(3000, () => {
   console.log('started')
+  console.log(`starting from...#${i}`)
 })
