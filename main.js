@@ -58,7 +58,7 @@ const basePath = 'img'
 
 app.use(bodyParser.text({
   type: 'text/plain',
-  limit: '20mb'
+  limit: '50mb'
 }))
 
 app.use(bodyParser.json())
@@ -77,7 +77,12 @@ const getNextFilename = (extension) => {
 }
 
 const extractExtension = (url) => {
-  return url.substr(url.lastIndexOf('.') + 1)
+  const ext = url.substr(url.lastIndexOf('.') + 1)
+  if (!/^[a-z]{3}$/.test(ext)) {
+    return defaultExtension
+  }
+
+  return ext
 }
 
 const onError = (err, filename) => {
@@ -114,7 +119,7 @@ const downloadFileByLink = (link, saveAs) => {
     const extension = extractExtension(link)
     const filename = saveAs || getNextFilename(extension)
     const filePath = path.resolve(basePath, filename)
-    childProcess.exec(`wget ${link} -O ${filePath}`, (e) => {
+    childProcess.exec(`wget '${link}' -O ${filePath}`, (e) => {
       if (e) {
         onError(e, filename)
         return reject(e)
@@ -145,8 +150,6 @@ app.post('/links', async ( req, res ) => {
 })
 
 app.post('/links/save-as', async (req, res) => {
-  const { link, filename } = req.body
-
   const linksInfo = req.body
   if (!linksInfo || !Array.isArray(linksInfo)) {
     console.error(`No links. Got this body`, req.body)
